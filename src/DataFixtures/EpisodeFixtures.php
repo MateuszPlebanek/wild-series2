@@ -7,25 +7,33 @@ use App\Entity\Season;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use Faker\Factory;
 
 class EpisodeFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        $episode1 = new Episode();
-        $episode1->setTitle('Welcome to the Playground');
-        $episode1->setNumber(1);
-        $episode1->setSynopsis('Vi et Powder découvrent le monde souterrain de Piltover.');
-        $episode1->setSeason($this->getReference('season1_Arcane', Season::class));
+        $faker = Factory::create('fr_FR');
 
-        $episode2 = new Episode();
-        $episode2->setTitle('Some Mysteries Are Better Left Unsolved');
-        $episode2->setNumber(2);
-        $episode2->setSynopsis('Les tensions montent après le vol d’un artefact.');
-        $episode2->setSeason($this->getReference('season1_Arcane', Season::class));
+        for ($p = 1; $p <= 10; $p++) {
+            for ($s = 1; $s <= 5; $s++) {
+                $seasonRef = "season_{$p}_{$s}";
 
-        $manager->persist($episode1);
-        $manager->persist($episode2);
+                /** @var Season $season */
+                $season = $this->getReference($seasonRef, Season::class);
+
+                for ($e = 1; $e <= 10; $e++) { 
+                    $episode = new Episode();
+                    $episode->setTitle($faker->sentence(4));
+                    $episode->setNumber($e);
+                    $episode->setSynopsis($faker->paragraphs(2, true));
+                    $episode->setSeason($season);
+
+                    $manager->persist($episode);
+                }
+            }
+        }
+
         $manager->flush();
     }
 
