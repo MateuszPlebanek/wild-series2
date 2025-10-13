@@ -2,7 +2,10 @@
 // src/Controller/ProgramController.php
 namespace App\Controller;
 
+use App\Entity\Program;
+use App\Entity\Season;
 use App\Repository\ProgramRepository;
+use App\Repository\SeasonRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -31,6 +34,28 @@ class ProgramController extends AbstractController
 
         return $this->render('program/show.html.twig', [
             'program' => $program,
+        ]);
+    }
+    #[Route('/{programId<\d+>}/seasons/{seasonId<\d+>}', name: 'season_show', methods: ['GET'])]
+    public function showSeason(
+        int $programId,
+        int $seasonId,
+        ProgramRepository $programRepository,
+        SeasonRepository $seasonRepository
+    ): Response {
+        $program = $programRepository->find($programId);
+        if (!$program) {
+            throw $this->createNotFoundException("Program #$programId introuvable");
+        }
+
+        $season = $seasonRepository->find($seasonId);
+        if (!$season || $season->getProgram()?->getId() !== $program->getId()) {
+            throw $this->createNotFoundException("Season #$seasonId n'appartient pas au Program #$programId");
+        }
+
+        return $this->render('program/season_show.html.twig', [
+            'program' => $program,
+            'season'  => $season,
         ]);
     }
 

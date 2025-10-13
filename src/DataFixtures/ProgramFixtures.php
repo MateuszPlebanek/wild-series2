@@ -41,7 +41,13 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
             'poster' => 'https://example.com/strangerthings.jpg',
             'category' => 'category_Horreur',
         ],
-    ];
+        [
+            'title' => 'Arcane',
+            'synopsis' => 'Deux sœurs se retrouvent dans des camps opposés au milieu du chaos à Piltover et Zaun.',
+            'poster' => 'https://example.com/arcane.jpg',
+            'category' => 'category_Animation',
+        ],
+];
 
     public function load(ObjectManager $manager): void
     {
@@ -52,6 +58,7 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
             $program->setPoster($programData["poster"]);
             $program->setCategory($this->getReference($programData["category"], Category::class));
             $manager->persist($program);
+            $this->addReference('program_' . $programData["title"], $program);
         }
         
         $manager->flush();

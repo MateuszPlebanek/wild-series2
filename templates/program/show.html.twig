@@ -1,14 +1,30 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ program.title }}{% endblock %}
+{% block title %}Série #{{ program.id }}{% endblock %}
 
 {% block body %}
-<article>
-    <img src="{{ program.poster }}" alt="{{ program.title }}">
+  <article>
+    {% if program.poster %}
+      <img src="{{ program.poster }}" alt="{{ program.title }}">
+    {% endif %}
     <h1>{{ program.title }}</h1>
     <p>{{ program.synopsis }}</p>
     <p>Catégorie : {{ program.category.name }}</p>
-</article>
+  </article>
 
-<a href="{{ path('program_index') }}">Retour à la liste</a>
+  <h2>Saisons</h2>
+  <ul>
+    {% for season in program.seasons %}
+      <li>
+        Saison {{ season.number }} ({{ season.year }})
+        — <a href="{{ path('program_season_show', { programId: program.id, seasonId: season.id }) }}">
+            Voir la saison
+          </a>
+      </li>
+    {% else %}
+      <li>Aucune saison.</li>
+    {% endfor %}
+  </ul>
+
+  <a href="{{ path('program_index') }}">← Retour à la liste</a>
 {% endblock %}
