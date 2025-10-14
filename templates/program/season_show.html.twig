@@ -3,20 +3,29 @@
 {% block title %}{{ program.title }} — Saison {{ season.number }}{% endblock %}
 
 {% block body %}
-  <h1>{{ program.title }} — Saison {{ season.number }}</h1>
-  <p>Année : {{ season.year }}</p>
+  <h1>{{ program.title }}</h1>
+  <p>Saison {{ season.number }} ({{ season.year }})</p>
   {% if season.description %}
     <p>{{ season.description }}</p>
   {% endif %}
 
   <h2>Épisodes</h2>
   <ul>
-    {% for episode in season.episodes %}
-      <li>#{{ episode.number }} — {{ episode.title }}<br>{{ episode.synopsis }}</li>
+    {% for ep in season.episodes %}
+      <li>
+        Épisode {{ ep.number }} — {{ ep.title }}
+        — <a href="{{ path('program_episode_show', {
+              programId: program.id,
+              seasonId:  season.id,
+              episodeId: ep.id
+            }) }}">Voir l’épisode</a>
+      </li>
     {% else %}
       <li>Aucun épisode.</li>
     {% endfor %}
   </ul>
 
-  <a href="{{ path('program_show', { id: program.id }) }}">← Retour à la série</a>
+  <p>
+    <a href="{{ path('program_show', { id: program.id }) }}">← Retour à la série</a>
+  </p>
 {% endblock %}
