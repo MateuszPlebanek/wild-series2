@@ -5,8 +5,11 @@ namespace App\Controller;
 use App\Entity\Program;
 use App\Entity\Season;
 use App\Entity\Episode;
+use App\Form\ProgramType; 
 use App\Repository\ProgramRepository;
+use Doctrine\ORM\EntityManagerInterface; 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request; 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -25,7 +28,27 @@ class ProgramController extends AbstractController
         ]);
     }
 
-    // 1) show(): ParamConverter sur {id} -> Program (cas simple)
+    #[Route('/new', name: 'new', methods: ['GET','POST'])]
+    public function new(Request $request, EntityManagerInterface $em): Response
+    {
+        $program = new Program();
+
+        $form = $this->createForm(ProgramType::class, $program);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($program);
+            $em->flush();
+
+            $this->addFlash('success', 'Program created!');
+            return $this->redirectToRoute('program_show', ['id' => $program->getId()]);
+        }
+
+        return $this->render('program/new.html.twig', [
+            'form' => $form,
+        ]);
+    }
+
     #[Route('/show/{id<^[0-9]+$>}', name: 'show')]
     public function show(Program $program): Response
     {
@@ -34,8 +57,6 @@ class ProgramController extends AbstractController
         ]);
     }
 
-    // 2) showSeason(): ParamConverter avec MapEntity car placeholders != noms d'entités
-    // URL officielle du sujet : /program/{programId}/seasons/{seasonId}
     #[Route('/{programId}/seasons/{seasonId}', name: 'season_show')]
     public function showSeason(
         #[MapEntity(mapping: ['programId' => 'id'])] Program $program,
@@ -51,10 +72,7 @@ class ProgramController extends AbstractController
         ]);
     }
 
-    // 3) showEpisode(): ParamConverter x3 avec MapEntity (placeholders ...Id)
-    // URL officielle du sujet :
-    // /program/{programId}/season/{seasonId}/episode/{episodeId}
-    #[Route('/{programId}/season/{seasonId}/episode/{episodeId}', name: 'episode_show')]
+    #[Route('/{programId}/seasons/{seasonId}/episodes/{episodeId}', name: 'episode_show')]
     public function showEpisode(
         #[MapEntity(mapping: ['programId' => 'id'])] Program $program,
         #[MapEntity(mapping: ['seasonId'  => 'id'])] Season $season,
