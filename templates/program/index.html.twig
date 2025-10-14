@@ -5,6 +5,11 @@
 {% block body %}
     <h1>Toutes les séries de la table program :</h1>
 
+    <p>
+    <a class="btn btn-primary" href="{{ path('program_new') }}">+ New program</a> |
+    <a class="btn btn-primary" href="{{ path('app_index') }}">Retour à l'accueil</a>
+    <p>
+
     {% for program in programs %}
         <div class="mb-4">
             <h2>{{ loop.index }} / {{ program.title }} - Catégorie : {{ program.category.name }}</h2>
@@ -15,5 +20,5 @@
         <p>Aucune série trouvée.</p>
     {% endfor %}
 
-    <a href="{{ path('app_index') }}">Retour à l'accueil</a>
+    
 {% endblock %}
