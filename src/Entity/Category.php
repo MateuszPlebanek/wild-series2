@@ -6,8 +6,11 @@ use App\Repository\CategoryRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
+#[UniqueEntity(fields: ['name'], message: 'Cette categorie existe déjà.')]
 class Category
 {
     #[ORM\Id]
@@ -15,7 +18,9 @@ class Category
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
+    #[Assert\NotBlank(message: 'Le nom est requis.')]
+    #[Assert\Length(max: 255, maxMessage: 'Max {{ limit }} caractères.')]
     private ?string $name = null;
 
    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Program::class)]
