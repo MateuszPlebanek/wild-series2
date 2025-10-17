@@ -24,10 +24,12 @@ class ProgramType extends AbstractType
             ])
             ->add('poster', TextType::class, [
                 'label' => 'Poster URL',
+                'required' => false,
+                'attr' => ['placeholder' =>'https://..']
             ])
             ->add('category', EntityType::class, [
                 'class'        => Category::class,
-                'choice_label' => 'name',   // affiche le name au lieu de l’id
+                'choice_label' => 'name',   
                 'placeholder'  => 'Choose a category',
                 'label'        => 'Category',
             ]);
