@@ -13,6 +13,17 @@
     </head>
     <body>
         {% include '_navbar.html.twig' %}
+
+        {# Flash messages (s’affichent une seule fois) #}
+    {% for category, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert" style="margin: 1rem;">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
         {% block body %}{% endblock %}
     </body>
 </html>
