@@ -1,13 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Episode{% endblock %}
+{% block title %}Editer : {{ episode.title }}{% endblock %}
 
 {% block body %}
-    <h1>Edit Episode</h1>
+  <h1>Editer l’épisode</h1>
 
-    {{ include('episode/_form.html.twig', {'button_label': 'Update'}) }}
+  {{ include('episode/_form.html.twig', { button_label: 'Mettre à jour' }) }}
 
-    <a href="{{ path('app_episode_index') }}">back to list</a>
+  <p class="mt-3">
+    <a href="{{ path('app_episode_show', { slug: episode.slug }) }}">← Retour à l’épisode</a>
+    &nbsp;|&nbsp;
+    <a href="{{ path('app_episode_index') }}">Liste des épisodes</a>
+  </p>
 
-    {{ include('episode/_delete_form.html.twig') }}
+  {{ include('episode/_delete_form.html.twig') }}
 {% endblock %}

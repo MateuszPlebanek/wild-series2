@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Série #{{ program.id }} — {{ program.title }}{% endblock %}
+{% block title %}{{ program.title }}{% endblock %}
 
 {% block body %}
   <article>
@@ -9,6 +9,11 @@
     {% endif %}
     <h1>{{ program.title }}</h1>
     <p>{{ program.synopsis }}</p>
+
+    {% if programDuration is defined %}
+    <p><strong>Durée totale :</strong> {{ programDuration }}</p>
+    {% endif %}
+    
     <p>Catégorie : {{ program.category.name }}</p>
   </article>
 
@@ -18,7 +23,7 @@
       <li>
         Saison {{ season.number }} ({{ season.year }})
         — <a href="{{ path('program_season_show', {
-              programId: program.id,
+              programSlug: program.slug,
               seasonId:  season.id
             }) }}">Voir la saison</a>
       </li>

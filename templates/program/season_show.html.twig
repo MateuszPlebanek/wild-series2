@@ -15,9 +15,9 @@
       <li>
         Épisode {{ ep.number }} — {{ ep.title }}
         — <a href="{{ path('program_episode_show', {
-              programId: program.id,
+              programSlug: program.slug,
               seasonId:  season.id,
-              episodeId: ep.id
+              episodeSlug: ep.slug
             }) }}">Voir l’épisode</a>
       </li>
     {% else %}
@@ -26,6 +26,6 @@
   </ul>
 
   <p>
-    <a href="{{ path('program_show', { id: program.id }) }}">← Retour à la série</a>
+    <a href="{{ path('program_show', { slug: program.slug }) }}">← Retour à la série</a>
   </p>
 {% endblock %}
