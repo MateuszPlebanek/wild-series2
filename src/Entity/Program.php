@@ -12,6 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProgramRepository::class)]
 #[UniqueEntity(fields: ['title'], message: 'Ce titre existe déjà.')]
+#[UniqueEntity(fields: ['slug'], message: 'Ce slug existe déjà.')]
 class Program
 {
     #[ORM\Id]
@@ -23,6 +24,9 @@ class Program
     #[Assert\NotBlank(message: 'Le titre est requis.')]
     #[Assert\Length(max: 255, maxMessage: 'Max {{ limit }} caractères.')]
     private ?string $title = null;
+
+    #[ORM\Column(length: 255, unique: true)]
+    private ?string $slug = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message: 'Le synopsis est requis.')]
@@ -73,6 +77,18 @@ class Program
     public function setTitle(string $title): static
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): static
+    {
+        $this->slug = $slug;
 
         return $this;
     }

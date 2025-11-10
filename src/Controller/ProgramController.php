@@ -5,16 +5,18 @@ namespace App\Controller;
 use App\Entity\Program;
 use App\Entity\Season;
 use App\Entity\Episode;
-use App\Form\ProgramType; 
+use App\Form\ProgramType;
 use App\Repository\ProgramRepository;
-use Doctrine\ORM\EntityManagerInterface; 
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request; 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use App\Service\ProgramDuration;
 
-#[Route('/program', name: 'program_')]
+#[Route('/programs', name: 'program_')]
 class ProgramController extends AbstractController
 {
     #[Route('/', name: 'index')]
@@ -28,8 +30,8 @@ class ProgramController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'new', methods: ['GET','POST'])]
-    public function new(Request $request, EntityManagerInterface $em): Response
+    #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
     {
         $program = new Program();
 
@@ -37,11 +39,14 @@ class ProgramController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $slug = $slugger->slug((string) $program->getTitle())->lower();
+            $program->setSlug($slug);
+
             $em->persist($program);
             $em->flush();
 
             $this->addFlash('success', 'Program created!');
-            return $this->redirectToRoute('program_show', ['id' => $program->getId()]);
+            return $this->redirectToRoute('program_show', ['slug' => $program->getSlug()]);
         }
 
         return $this->render('program/new.html.twig', [
@@ -49,17 +54,44 @@ class ProgramController extends AbstractController
         ]);
     }
 
-    #[Route('/show/{id<^[0-9]+$>}', name: 'show')]
-    public function show(Program $program): Response
-    {
+    #[Route('/{slug}', name: 'show', requirements: ['slug' => '[a-z0-9-]+'])]
+    public function show(
+        #[MapEntity(mapping: ['slug' => 'slug'])] Program $program, ProgramDuration $programDuration
+    ): Response {
         return $this->render('program/show.html.twig', [
+            'program' => $program,
+            'programDuration' => $programDuration->calculate($program),
+        ]);
+    }
+
+    #[Route('/{slug}/edit', name: 'edit', methods: ['GET', 'POST'])]
+    public function edit(
+        #[MapEntity(mapping: ['slug' => 'slug'])] Program $program,
+        Request $request,
+        EntityManagerInterface $em,
+        SluggerInterface $slugger
+    ): Response {
+        $form = $this->createForm(ProgramType::class, $program);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $program->setSlug($slugger->slug((string) $program->getTitle())->lower());
+
+            $em->flush();
+
+            $this->addFlash('success', 'Program updated!');
+            return $this->redirectToRoute('program_show', ['slug' => $program->getSlug()]);
+        }
+
+        return $this->render('program/edit.html.twig', [
+            'form' => $form,
             'program' => $program,
         ]);
     }
 
-    #[Route('/{programId}/seasons/{seasonId}', name: 'season_show')]
+    #[Route('/{programSlug}/seasons/{seasonId}', name: 'season_show')]
     public function showSeason(
-        #[MapEntity(mapping: ['programId' => 'id'])] Program $program,
+        #[MapEntity(mapping: ['programSlug' => 'slug'])] Program $program,
         #[MapEntity(mapping: ['seasonId' => 'id'])] Season $season
     ): Response {
         if ($season->getProgram() !== $program) {
@@ -72,11 +104,11 @@ class ProgramController extends AbstractController
         ]);
     }
 
-    #[Route('/{programId}/seasons/{seasonId}/episodes/{episodeId}', name: 'episode_show')]
+    #[Route('/{programSlug}/seasons/{seasonId}/episodes/{episodeSlug}', name: 'episode_show')]
     public function showEpisode(
-        #[MapEntity(mapping: ['programId' => 'id'])] Program $program,
+        #[MapEntity(mapping: ['programSlug' => 'slug'])] Program $program,
         #[MapEntity(mapping: ['seasonId'  => 'id'])] Season $season,
-        #[MapEntity(mapping: ['episodeId' => 'id'])] Episode $episode
+        #[MapEntity(mapping: ['episodeSlug' => 'slug'])] Episode $episode
     ): Response {
         if ($season->getProgram() !== $program || $episode->getSeason() !== $season) {
             throw $this->createNotFoundException('Incohérence programme/saison/épisode.');

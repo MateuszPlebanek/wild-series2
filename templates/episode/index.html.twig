@@ -18,13 +18,13 @@
         <tbody>
         {% for episode in episodes %}
             <tr>
-                <td>{{ episode.id }}</td>
+                <td>{{ episode.slug }}</td>
                 <td>{{ episode.title }}</td>
                 <td>{{ episode.synopsis }}</td>
                 <td>{{ episode.number }}</td>
                 <td>
-                    <a href="{{ path('app_episode_show', {'id': episode.id}) }}">show</a>
-                    <a href="{{ path('app_episode_edit', {'id': episode.id}) }}">edit</a>
+                    <a href="{{ path('app_episode_show', {'slug': episode.slug}) }}">show</a>
+                    <a href="{{ path('app_episode_edit', {'slug': episode.slug}) }}">edit</a>
                 </td>
             </tr>
         {% else %}

@@ -5,8 +5,10 @@ namespace App\Entity;
 use App\Repository\EpisodeRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: EpisodeRepository::class)]
+#[UniqueEntity(fields: ['slug'], message: 'Ce slug existe déjà.')]
 class Episode
 {
     #[ORM\Id]
@@ -16,6 +18,9 @@ class Episode
 
     #[ORM\Column(length: 255)]
     private ?string $title = null;
+
+    #[ORM\Column(length: 255, unique: true)]
+    private ?string $slug = null;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $synopsis = null;
@@ -27,19 +32,34 @@ class Episode
     #[ORM\JoinColumn(nullable: false)]
     private ?Season $season = null;
 
+    #[ORM\Column]
+    private ?int $duration = null;
+
     public function getId(): ?int
     {
-        return $this->id;
+        return $this->id; 
     }
 
     public function getTitle(): ?string
     {
-        return $this->title;
+        return $this->title; 
     }
 
     public function setTitle(string $title): static
     {
-        $this->title = $title;
+         $this->title = $title;
+
+        return $this; 
+    }
+
+    public function getSlug(): ?string 
+    { 
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): static
+    {
+        $this->slug = $slug;
 
         return $this;
     }
@@ -76,6 +96,18 @@ class Episode
     public function setSeason(?Season $season): static
     {
         $this->season = $season;
+
+        return $this;
+    }
+
+    public function getDuration(): ?int
+    {
+        return $this->duration;
+    }
+
+    public function setDuration(int $duration): static
+    {
+        $this->duration = $duration;
 
         return $this;
     }
