@@ -1,0 +1,25 @@
+{% extends 'emails/layout.html.twig' %}
+
+{% block content %}
+  <h1>🎬 New episode created</h1>
+
+  <p>
+    Episode <strong>#{{ episode.number }}</strong> –
+    {{ episode.title }}
+  </p>
+
+  <p>
+    Program:
+    <strong>{{ program.title }}</strong>
+  </p>
+
+  <p>
+    <a href="{{ absolute_url(path('program_episode_show', {
+        programSlug: program.slug,
+        seasonId: episode.season.id,
+        episodeSlug: episode.slug
+    })) }}">
+        View episode
+    </a>
+  </p>
+{% endblock %}

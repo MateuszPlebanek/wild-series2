@@ -15,6 +15,8 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use App\Service\ProgramDuration;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 #[Route('/programs', name: 'program_')]
 class ProgramController extends AbstractController
@@ -31,7 +33,7 @@ class ProgramController extends AbstractController
     }
 
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
+    public function new(Request $request, EntityManagerInterface $em, SluggerInterface $slugger, MailerInterface $mailer): Response
     {
         $program = new Program();
 
@@ -44,6 +46,16 @@ class ProgramController extends AbstractController
 
             $em->persist($program);
             $em->flush();
+
+            $email = (new Email())
+                ->from($this->getParameter('mailer_from'))
+                ->to('admin@example.com') 
+                ->subject('Une nouvelle série vient d’être publiée !')
+                ->html($this->renderView('Program/newProgramEmail.html.twig', [
+                    'program' => $program,
+            ]));
+
+            $mailer->send($email);
 
             $this->addFlash('success', 'Program created!');
             return $this->redirectToRoute('program_show', ['slug' => $program->getSlug()]);
