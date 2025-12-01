@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>New program {{ program.title }} created</h1>
+    <p>Synopsis: {{ program.synopsis }}</p>
+    <p><a href="{{ absolute_url(path('program_show', {slug: program.slug})) }}">Voir la série</a></p>
+  </body>
+</html>

@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\String\Slugger\SluggerInterface;  
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 #[Route('/episode')]
 final class EpisodeController extends AbstractController
@@ -25,7 +27,7 @@ final class EpisodeController extends AbstractController
     }
 
     #[Route('/new', name: 'app_episode_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger, MailerInterface $mailer): Response
     {
         $episode = new Episode();
         $form = $this->createForm(EpisodeType::class, $episode);
@@ -36,6 +38,18 @@ final class EpisodeController extends AbstractController
             
             $entityManager->persist($episode);
             $entityManager->flush();
+
+            $email = (new Email())
+                ->from($this->getParameter('mailer_from'))
+                ->to('admin@wildseries.local')
+                ->subject('New episode created!')
+                ->html(
+                    $this->renderView('emails/new_episode.html.twig', [
+                        'episode' => $episode,
+                        'program' => $episode->getSeason()->getProgram(),
+                    ])
+                    );
+            $mailer->send($email);
 
             $this->addFlash('success', 'Episode created successfully.');
             return $this->redirectToRoute('app_episode_show', ['slug' => $episode->getSlug()], Response::HTTP_SEE_OTHER);
