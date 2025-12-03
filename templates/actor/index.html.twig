@@ -1,10 +1,29 @@
 {% extends 'base.html.twig' %}
+
 {% block title %}Actors{% endblock %}
+
 {% block body %}
   <h1>Actors</h1>
+
+  <p>
+    <a href="{{ path('actor_new') }}">➕ Add actor</a>
+  </p>
+
   <ul>
     {% for actor in actors %}
-      <li><a href="{{ path('actor_show', { id: actor.id }) }}">{{ actor.name }}</a></li>
+      <li>
+        {# Affiche la photo si elle existe #}
+        {% if actor.picture %}
+          <img src="{{ vich_uploader_asset(actor) }}"
+               alt="{{ actor.name }}"
+               style="width:60px; height:auto; margin-right:8px;">
+        {% endif %}
+
+        <a href="{{ path('actor_show', { id: actor.id }) }}">{{ actor.name }}</a>
+
+        {# Lien pour aller modifier l’acteur et lui mettre une image #}
+        – <a href="{{ path('actor_edit', { id: actor.id }) }}">edit</a>
+      </li>
     {% else %}
       <li>No actors yet.</li>
     {% endfor %}
