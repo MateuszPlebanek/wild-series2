@@ -5,7 +5,7 @@
 {% block body %}
   <article>
     {% if program.poster %}
-      <img src="{{ program.poster }}" alt="{{ program.title }}" style="max-width:240px">
+      <img src="{{ vich_uploader_asset(program, 'posterFile') }}" alt="{{ program.title }}" style="max-width:240px">
     {% endif %}
     <h1>{{ program.title }}</h1>
     <p>{{ program.synopsis }}</p>

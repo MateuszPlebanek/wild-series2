@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit actor{% endblock %}
+
+{% block body %}
+    <h1>Edit actor</h1>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-primary">Update</button>
+    {{ form_end(form) }}
+
+    <form
+        method="post"
+        action="{{ path('actor_delete', { id: actor.id }) }}"
+        onsubmit="return confirm('Are you sure?');"
+    >
+        <input type="hidden" name="_token" value="{{ csrf_token('delete_actor_' ~ actor.id) }}">
+        <button class="btn btn-danger">Delete</button>
+    </form>
+
+    <p><a href="{{ path('actor_index') }}">← Back to list</a></p>
+{% endblock %}
