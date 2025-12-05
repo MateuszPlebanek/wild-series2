@@ -17,6 +17,8 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use App\Service\ProgramDuration;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use App\Entity\Comment;
+use App\Form\CommentType;
 
 #[Route('/programs', name: 'program_')]
 class ProgramController extends AbstractController
@@ -120,16 +122,53 @@ class ProgramController extends AbstractController
     public function showEpisode(
         #[MapEntity(mapping: ['programSlug' => 'slug'])] Program $program,
         #[MapEntity(mapping: ['seasonId'  => 'id'])] Season $season,
-        #[MapEntity(mapping: ['episodeSlug' => 'slug'])] Episode $episode
+        #[MapEntity(mapping: ['episodeSlug' => 'slug'])] Episode $episode,
+        Request $request,
+        EntityManagerInterface $em
     ): Response {
         if ($season->getProgram() !== $program || $episode->getSeason() !== $season) {
             throw $this->createNotFoundException('Incohérence programme/saison/épisode.');
+        }
+
+        $comments = $episode->getComments()->toArray();
+        usort($comments, fn ($a, $b) => $a->getCreatedAt() <=> $b->getCreatedAt());
+
+        $commentFormView = null;
+
+        if ($this->getUser()) {
+            $comment = new Comment();
+            
+            $form = $this->createForm(CommentType::class, $comment);
+            $form->handleRequest($request);
+            
+            
+            
+            if ($form->isSubmitted() && $form->isValid()) {
+                
+                $comment->setEpisode($episode);
+                $comment->setAuthor($this->getUser());
+                $comment->setCreatedAt(new \DateTimeImmutable());
+
+                $em->persist($comment);
+                $em->flush();
+
+                $this->addFlash('success', 'Commentaire ajouté !');
+
+                return $this->redirectToRoute('program_episode_show', [
+                    'programSlug' => $program->getSlug(),
+                    'seasonId' => $season->getId(),
+                    'episodeSlug' => $episode->getSlug(),
+                ]);
+            }
+            $commentFormView = $form->createView();
         }
 
         return $this->render('program/episode_show.html.twig', [
             'program' => $program,
             'season'  => $season,
             'episode' => $episode,
+            'comments' => $episode->getComments(),
+            'commentForm' => $commentFormView,
         ]);
     }
 }

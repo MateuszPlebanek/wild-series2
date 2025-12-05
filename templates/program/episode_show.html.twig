@@ -1,4 +1,3 @@
-{# templates/program/episode_show.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ program.title }} — S{{ season.number }}E{{ episode.number }}{% endblock %}
@@ -9,6 +8,37 @@
 
   <h2>{{ episode.title }}</h2>
   <p>{{ episode.synopsis }}</p>
+
+  <hr>
+
+  <h3>Commentaires</h3>
+
+  {% if comments is defined and comments|length > 0 %}
+      {% for comment in comments %}
+          <div class="mb-3">
+              <strong>{{ comment.author.email }}</strong>
+              — Note : {{ comment.rate }}/5<br>
+              <small>{{ comment.createdAt|date('d/m/Y H:i') }}</small>
+              <p>{{ comment.comment }}</p>
+          </div>
+          <hr>
+      {% endfor %}
+  {% else %}
+      <p>Aucun commentaire pour cet épisode.</p>
+  {% endif %}
+
+  {% if commentForm is not null %}
+      <h3>Laisser un commentaire</h3>
+      {{ form_start(commentForm) }}
+          {{ form_row(commentForm.rate) }}
+          {{ form_row(commentForm.comment) }}
+          <button class="btn btn-success">Envoyer</button>
+      {{ form_end(commentForm) }}
+  {% else %}
+      <p>
+        <a href="{{ path('app_login') }}">Connecte-toi</a> pour laisser un commentaire.
+      </p>
+  {% endif %}
 
   <p>
     <a href="{{ path('program_season_show', {

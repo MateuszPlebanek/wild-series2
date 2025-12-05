@@ -1,19 +1,30 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
     <a class="navbar-brand" href="{{ path('app_index') }}">Wild Series</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{{ path('app_index') }}">Home</a>
+          <a class="nav-link active" href="{{ path('app_index') }}">Home</a>
         </li>
+
         <li class="nav-item">
           <a class="nav-link" href="{{ path('program_index') }}">Program</a>
         </li>
+
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" href="#" role="button"
+             data-bs-toggle="dropdown" aria-expanded="false">
             Dropdown
           </a>
           <ul class="dropdown-menu">
@@ -23,14 +34,31 @@
             <li><a class="dropdown-item" href="#">Something else here</a></li>
           </ul>
         </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-        </li>
       </ul>
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
+
+      {# -------- LOGIN / LOGOUT -------- #}
+      <div class="d-flex align-items-center">
+
+        {% if app.user %}
+          <span class="me-3 text-success fw-bold">
+            {{ app.user.email }}
+          </span>
+
+          <a class="btn btn-outline-danger"
+             href="{{ path('app_logout') }}">
+            Se déconnecter
+          </a>
+
+        {% else %}
+          <a class="btn btn-outline-primary"
+             href="{{ path('app_login') }}">
+            Se connecter
+          </a>
+        {% endif %}
+
+      </div>
+      {# -------------------------------- #}
+
     </div>
   </div>
 </nav>
