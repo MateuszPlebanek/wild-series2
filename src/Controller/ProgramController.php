@@ -46,6 +46,8 @@ class ProgramController extends AbstractController
             $slug = $slugger->slug((string) $program->getTitle())->lower();
             $program->setSlug($slug);
 
+            $program->setOwner($this->getUser());
+
             $em->persist($program);
             $em->flush();
 
@@ -85,6 +87,15 @@ class ProgramController extends AbstractController
         EntityManagerInterface $em,
         SluggerInterface $slugger
     ): Response {
+
+        if (
+            !$this->isGranted('ROLE_ADMIN') &&
+            $this->getUser() !== $program->getOwner()
+        ) {
+            throw $this->createAccessDeniedException(
+                'Vous ne pouvez modifier que vos propres séries.'
+            );
+        }
         $form = $this->createForm(ProgramType::class, $program);
         $form->handleRequest($request);
 
@@ -135,7 +146,7 @@ class ProgramController extends AbstractController
 
         $commentFormView = null;
 
-        if ($this->getUser()) {
+        if ($this->isGranted('ROLE_CONTRIBUTOR')) {
             $comment = new Comment();
             
             $form = $this->createForm(CommentType::class, $comment);
@@ -171,4 +182,43 @@ class ProgramController extends AbstractController
             'commentForm' => $commentFormView,
         ]);
     }
-}
+    #[Route('/comments/{id}/delete', name: 'comment_delete', methods: ['POST'])]
+        public function deleteComment(
+            Comment $comment,
+            Request $request,
+            EntityManagerInterface $em
+        ): Response {
+
+                // On récupère tout de suite les éléments pour la redirection
+            $episode = $comment->getEpisode();
+            $season  = $episode->getSeason();
+            $program = $season->getProgram();
+
+
+            if (!$this->isCsrfTokenValid('delete' . $comment->getId(), $request->request->get('_token'))) {
+                $this->addFlash('danger', 'Token CSRF invalide.');
+            } else {
+                $user = $this->getUser();
+
+                if (
+                    !$this->isGranted('ROLE_ADMIN')
+                    && (!$user || $user !== $comment->getAuthor())
+                ) {
+                    throw $this->createAccessDeniedException(
+                        'Vous ne pouvez supprimer que vos propres commentaires.'
+                    );
+                }
+
+                $em->remove($comment);
+                $em->flush();
+
+                $this->addFlash('success', 'Commentaire supprimé.');
+            }
+
+            return $this->redirectToRoute('program_episode_show', [
+                'programSlug' => $program->getSlug(),
+                'seasonId'    => $season->getId(),
+                'episodeSlug' => $episode->getSlug(),
+            ]);
+        }
+    }

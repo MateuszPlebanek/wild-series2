@@ -8,6 +8,15 @@
       <img src="{{ vich_uploader_asset(program, 'posterFile') }}" alt="{{ program.title }}" style="max-width:240px">
     {% endif %}
     <h1>{{ program.title }}</h1>
+
+    {% if is_granted('ROLE_ADMIN') or (app.user and app.user == program.owner) %}
+        <p>
+            <a class="btn btn-warning" href="{{ path('program_edit', { slug: program.slug }) }}">
+                ✏️ Éditer cette série
+            </a>
+        </p>
+    {% endif %}
+    
     <p>{{ program.synopsis }}</p>
 
     {% if programDuration is defined %}
