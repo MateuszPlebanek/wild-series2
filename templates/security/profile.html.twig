@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon compte{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Mon compte</h1>
+
+    <div class="card mt-3">
+        <div class="card-body">
+            <p><strong>Email :</strong> {{ user.email }}</p>
+        </div>
+    </div>
+
+    <a href="{{ path('app_index') }}" class="btn btn-link mt-3">← Retour à l'accueil</a>
+</div>
+{% endblock %}

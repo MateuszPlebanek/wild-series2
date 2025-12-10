@@ -146,7 +146,7 @@ class ProgramController extends AbstractController
 
         $commentFormView = null;
 
-        if ($this->isGranted('ROLE_CONTRIBUTOR')) {
+        if ($this->getUser()) {
             $comment = new Comment();
             
             $form = $this->createForm(CommentType::class, $comment);
@@ -189,7 +189,6 @@ class ProgramController extends AbstractController
             EntityManagerInterface $em
         ): Response {
 
-                // On récupère tout de suite les éléments pour la redirection
             $episode = $comment->getEpisode();
             $season  = $episode->getSeason();
             $program = $season->getProgram();

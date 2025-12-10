@@ -81,7 +81,7 @@
       <p>Aucun commentaire pour cet épisode.</p>
   {% endif %}
 
-  {% if commentForm is not null %}
+  {% if app.user and commentForm is not null %}
       <h3>Laisser un commentaire</h3>
       {{ form_start(commentForm) }}
           {{ form_row(commentForm.rate) }}
