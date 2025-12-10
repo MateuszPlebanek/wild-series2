@@ -20,6 +20,60 @@
               — Note : {{ comment.rate }}/5<br>
               <small>{{ comment.createdAt|date('d/m/Y H:i') }}</small>
               <p>{{ comment.comment }}</p>
+
+              {# Bouton + modale de suppression, visibles seulement pour admin ou auteur #}
+              {% if app.user and (is_granted('ROLE_ADMIN') or app.user == comment.author) %}
+
+                  {# Bouton qui ouvre la modale #}
+                  <button
+                      type="button"
+                      class="btn btn-sm btn-danger"
+                      data-bs-toggle="modal"
+                      data-bs-target="#deleteCommentModal-{{ comment.id }}"
+                  >
+                      🗑️ Supprimer
+                  </button>
+
+                  {# Modale Bootstrap spécifique à ce commentaire #}
+                  <div class="modal fade"
+                       id="deleteCommentModal-{{ comment.id }}"
+                       tabindex="-1"
+                       aria-labelledby="deleteCommentModalLabel-{{ comment.id }}"
+                       aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered">
+                          <div class="modal-content">
+                              <div class="modal-header">
+                                  <h5 class="modal-title" id="deleteCommentModalLabel-{{ comment.id }}">
+                                      Supprimer ce commentaire ?
+                                  </h5>
+                                  <button type="button"
+                                          class="btn-close"
+                                          data-bs-dismiss="modal"
+                                          aria-label="Fermer"></button>
+                              </div>
+                              <div class="modal-body">
+                                  Es-tu sûr de vouloir supprimer ce commentaire ?
+                              </div>
+                              <div class="modal-footer">
+                                  <button type="button"
+                                          class="btn btn-secondary"
+                                          data-bs-dismiss="modal">
+                                      Annuler
+                                  </button>
+
+                                  {# Vrai formulaire de suppression #}
+                                  <form method="post"
+                                        action="{{ path('program_comment_delete', { id: comment.id }) }}">
+                                      <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
+                                      <button type="submit" class="btn btn-danger">
+                                          Supprimer
+                                      </button>
+                                  </form>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              {% endif %}
           </div>
           <hr>
       {% endfor %}

@@ -9,6 +9,8 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Faker\Factory;
+use App\DataFixtures\UserFixtures;
+use App\Entity\User;
 
 class ProgramFixtures extends Fixture implements DependentFixtureInterface
 {
@@ -17,6 +19,7 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('fr_FR');
+        $owner = $this->getReference(UserFixtures::CONTRIBUTOR_USER, User::class);
 
         for($i = 1; $i <= 10; $i++) {
             $program = new Program();
@@ -26,6 +29,7 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
 
             $slug = $this->slugger->slug($program->getTitle())->lower();
             $program->setSlug($slug);
+            $program->setOwner($owner);
 
             $manager->persist($program);
             $this->addReference('program_' . $i, $program);
@@ -38,6 +42,7 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
     {
         return [
             CategoryFixtures::class,
+            UserFixtures::class,
         ];
     }
 }
