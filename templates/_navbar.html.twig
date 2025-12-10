@@ -36,28 +36,38 @@
         </li>
       </ul>
 
-      {# -------- LOGIN / LOGOUT -------- #}
-      <div class="d-flex align-items-center">
+      {# -------- AUTH NAV -------- #}
+<div class="d-flex align-items-center">
 
-        {% if app.user %}
-          <span class="me-3 text-success fw-bold">
-            {{ app.user.email }}
-          </span>
+  {% if app.user %}
+    <span class="me-3 text-success fw-bold">
+      {{ app.user.email }}
+    </span>
 
-          <a class="btn btn-outline-danger"
-             href="{{ path('app_logout') }}">
-            Se déconnecter
-          </a>
+    <a class="btn btn-outline-secondary me-2"
+       href="{{ path('app_my_profile') }}">
+      Mon compte
+    </a>
 
-        {% else %}
-          <a class="btn btn-outline-primary"
-             href="{{ path('app_login') }}">
-            Se connecter
-          </a>
-        {% endif %}
+    <a class="btn btn-outline-danger"
+       href="{{ path('app_logout') }}">
+      Se déconnecter
+    </a>
 
-      </div>
-      {# -------------------------------- #}
+  {% else %}
+    <a class="btn btn-outline-primary me-2"
+       href="{{ path('app_login') }}">
+      Se connecter
+    </a>
+
+    <a class="btn btn-outline-success"
+       href="{{ path('app_register') }}">
+      S’inscrire
+    </a>
+  {% endif %}
+
+</div>
+{# -------------------------------- #}
 
     </div>
   </div>
