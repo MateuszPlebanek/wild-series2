@@ -19,20 +19,39 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use App\Entity\Comment;
 use App\Form\CommentType;
+use App\Form\SearchProgramType;
 
 #[Route('/programs', name: 'program_')]
 class ProgramController extends AbstractController
 {
-    #[Route('/', name: 'index')]
-    public function index(ProgramRepository $programRepository): Response
+ #[Route('/', name: 'index')]
+    public function index(Request $request, ProgramRepository $programRepository): Response
     {
-        $programs = $programRepository->findAll();
+        $form = $this->createForm(SearchProgramType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $search = $form->get('search')->getData();
+
+            if ($search !== null && $search !== '') {
+                $programs = $programRepository->findByTitleOrActorName($search);
+            } else {
+                $programs = $programRepository->findAll();
+            }
+        } else {
+            $programs = $programRepository->findAll();
+        }
 
         return $this->render('program/index.html.twig', [
             'website'  => 'Wild Series',
             'programs' => $programs,
+            'form'     => $form->createView(),
         ]);
     }
+
+
+
+
 
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $em, SluggerInterface $slugger, MailerInterface $mailer): Response
