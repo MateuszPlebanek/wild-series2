@@ -5,12 +5,20 @@
 {% block body %}
     <h1>Toutes les séries de la table program :</h1>
 
-    <p>
-    <a class="btn btn-primary" href="{{ path('program_new') }}">+ New program</a> 
-    <a class="btn btn-secondary" href="{{ path('app_season_index') }}">Seasons (admin)</a>
-    <a class="btn btn-secondary" href="{{ path('app_episode_index') }}">Episodes (admin)</a>
-    <a class="btn btn-primary" href="{{ path('app_index') }}">Retour à l'accueil</a>
-    </p>
+    {# Formulaire de recherche #}
+    {{ form_start(form) }}
+        <div class="input-group mb-3">
+            {{ form_widget(form.search, {
+                attr: {
+                    class: 'form-control',
+                    placeholder: 'Rechercher une série ou un acteur…'
+                }
+            }) }}
+            <button type="submit" class="btn btn-outline-primary">Search</button>
+        </div>
+    {{ form_end(form) }}
+
+    <p><strong>Résultats : {{ programs|length }}</strong></p>
 
     {% for program in programs %}
         <div class="mb-4">
@@ -21,6 +29,4 @@
     {% else %}
         <p>Aucune série trouvée.</p>
     {% endfor %}
-
-    
 {% endblock %}
