@@ -1,7 +1,7 @@
 # 🎬 Wild Series — Symfony TV Show Database
 
 Wild Series is a Symfony application that manages TV shows, seasons, episodes, comments, users, authentication, and an advanced search system.
-This project was built as part of the Symfony learning.
+This project was built as part of the Symfony learning 
 
 # 🚀 Main Features
 ## 🔐 Authentication & Security
@@ -87,7 +87,6 @@ Each program created through fixtures is automatically linked to an owner.
 - QueryBuilder / DQL
 
 ## 📁 Project Structure (Simplified)
-
 ```txt
 wild-series/
  ├─ public/
@@ -176,6 +175,7 @@ wild-series/
  ├─ .env
  └─ README.md
 ```
+
  
 
 ## 🧪 Running the Project

@@ -28,7 +28,7 @@
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-    <body>
+    <body {{ stimulus_controller('theme')  }} {{ stimulus_target('theme', 'body') }}>
         {% include '_navbar.html.twig' %}
 
         {# Flash messages (s’affichent une seule fois) #}
