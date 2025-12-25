@@ -21,7 +21,7 @@
     <p><strong>Résultats : {{ programs|length }}</strong></p>
 
     {% for program in programs %}
-        <div class="mb-4">
+        <div class="container py-4 bg-body-secondary text-body p-4 rounded mb-4 shadow-sm">
             <h2>{{ loop.index }} / {{ program.title }} - Catégorie : {{ program.category.name }}</h2>
             <p>{{ program.synopsis }}</p>
             <a href="{{ path('program_show', { slug: program.slug }) }}">Voir la fiche</a>

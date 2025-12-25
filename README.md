@@ -1,7 +1,7 @@
 # 🎬 Wild Series — Symfony TV Show Database
 
 Wild Series is a Symfony application that manages TV shows, seasons, episodes, comments, users, authentication, and an advanced search system.
-This project was built as part of the Symfony learning path at the Wild Code School.
+This project was built as part of the Symfony learning 
 
 # 🚀 Main Features
 ## 🔐 Authentication & Security
@@ -87,21 +87,95 @@ Each program created through fixtures is automatically linked to an owner.
 - QueryBuilder / DQL
 
 ## 📁 Project Structure (Simplified)
-src/
- ├─ Controller/
- ├─ Entity/
- ├─ Form/
- ├─ Repository/
- ├─ Security/
- ├─ Service/
- └─ DataFixtures/
+```txt
+wild-series/
+ ├─ public/
+ │   └─ index.php
+ │
+ ├─ src/
+ │   ├─ Controller/
+ │   │    ├─ ProgramController.php
+ │   │    ├─ SecurityController.php
+ │   │    ├─ RegistrationController.php
+ │   │    └─ ...
+ │   │
+ │   ├─ DataFixtures/
+ │   │    ├─ CategoryFixtures.php
+ │   │    ├─ UserFixtures.php
+ │   │    ├─ ProgramFixtures.php
+ │   │    ├─ ActorFixtures.php
+ │   │    ├─ SeasonFixtures.php
+ │   │    └─ EpisodeFixtures.php
+ │   │
+ │   ├─ Entity/
+ │   │    ├─ Program.php
+ │   │    ├─ Actor.php
+ │   │    ├─ User.php
+ │   │    ├─ Season.php
+ │   │    ├─ Episode.php
+ │   │    └─ Category.php
+ │   │
+ │   ├─ Form/
+ │   │    ├─ ProgramType.php
+ │   │    ├─ CommentType.php
+ │   │    ├─ SearchProgramType.php
+ │   │    └─ RegistrationFormType.php
+ │   │
+ │   ├─ Repository/
+ │   │    ├─ ProgramRepository.php
+ │   │    ├─ ActorRepository.php
+ │   │    ├─ CategoryRepository.php
+ │   │    └─ UserRepository.php
+ │   │
+ │   ├─ Security/
+ │   │    ├─ LoginFormAuthenticator.php
+ │   │    └─ EmailVerifier.php
+ │   │
+ │   ├─ Service/
+ │   │    └─ ProgramDuration.php
+ │   │
+ │   └─ Kernel.php
+ │
+ ├─ templates/
+ │   ├─ program/
+ │   │    ├─ index.html.twig
+ │   │    ├─ show.html.twig
+ │   │    ├─ edit.html.twig
+ │   │    └─ new.html.twig
+ │   │
+ │   ├─ episode/
+ │   │    └─ show.html.twig
+ │   │
+ │   ├─ registration/
+ │   │    └─ register.html.twig
+ │   │
+ │   ├─ reset_password/
+ │   │    ├─ check_email.html.twig
+ │   │    ├─ email.html.twig
+ │   │    └─ reset.html.twig
+ │   │
+ │   ├─ security/
+ │   │    └─ login.html.twig
+ │   │
+ │   ├─ partials/
+ │   │    └─ _navbar.html.twig
+ │   │
+ │   ├─ base.html.twig
+ │   └─ index.html.twig
+ │
+ ├─ config/
+ │   ├─ packages/
+ │   ├─ routes/
+ │   └─ services.yaml
+ │
+ ├─ var/
+ ├─ vendor/
+ ├─ composer.json
+ ├─ symfony.lock
+ ├─ .env
+ └─ README.md
+```
 
-templates/
- ├─ program/
- ├─ episode/
- ├─ security/
- ├─ registration/
- └─ partials/
  
 
 ## 🧪 Running the Project

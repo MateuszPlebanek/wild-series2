@@ -39,6 +39,13 @@
       {# -------- AUTH NAV -------- #}
 <div class="d-flex align-items-center">
 
+  <div class="d-flex align-items-center">
+
+  <button class="btn btn-outline-secondary me-3"
+          {{ stimulus_action('theme', 'toggleDarkMode') }}>
+    🌓
+  </button>
+
   {% if app.user %}
     <span class="me-3 text-success fw-bold">
       {{ app.user.email }}
