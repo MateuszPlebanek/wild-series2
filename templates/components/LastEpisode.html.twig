@@ -1,0 +1,31 @@
+<aside class="container my-4">
+  <h3 class="mb-3">Derniers épisodes</h3>
+
+  <div class="row g-3">
+    {% for episode in this.episodes %}
+      <div class="col-12 col-md-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title mb-2">
+              <a href="{{ path('app_episode_show', { slug: episode.slug }) }}" class="text-decoration-none">
+                {{ episode.title }}
+              </a>
+            </h5>
+
+            <p class="card-text mb-0">
+              Épisode {{ episode.number }}
+            </p>
+            <p class="card-text mb-0">
+              Saison {{ episode.season.number }}
+            </p>
+            <p class="card-text">
+              Série : {{ episode.season.program.title }}
+            </p>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <p>Aucun épisode pour le moment.</p>
+    {% endfor %}
+  </div>
+</aside>

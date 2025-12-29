@@ -10,7 +10,7 @@
       {% for program in programs %}
         <li>
           <strong>#{{ program.id }}</strong> —
-          <a href="{{ path('program_show', { id: program.id }) }}">
+          <a href="{{ path('program_show', { slug: program.slug }) }}">
             {{ program.title }}
           </a>
           <br>
