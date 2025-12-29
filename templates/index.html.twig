@@ -3,5 +3,15 @@
 {% block title %}Accueil{% endblock %}
 
 {% block body %}
-    <h1>Bienvenue !</h1>
+  <div class="container my-4">
+    <h1 class="mb-4">Bienvenue !</h1>
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Search programs</h2>
+
+        {{ component('ProgramSearch') }}
+      </div>
+    </div>
+  </div>
 {% endblock %}

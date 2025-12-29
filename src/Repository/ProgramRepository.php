@@ -20,6 +20,12 @@ class ProgramRepository extends ServiceEntityRepository
      */
     public function findLikeName(string $name): array
     {
+        $name = trim($name);
+
+        if ($name === '') {
+            return [];
+        }
+        
         return $this->createQueryBuilder('p')
             ->where('p.title LIKE :name')
             ->setParameter('name', '%' . $name . '%')
