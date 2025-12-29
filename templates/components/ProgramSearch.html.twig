@@ -1,0 +1,38 @@
+<div{{ attributes }}>
+  <div class="mb-3">
+    <label class="form-label" for="search">
+      Rechercher une série dans notre catalogue
+    </label>
+
+    <input
+      type="search"
+      id="search"
+      class="form-control"
+      placeholder="Tape un titre…"
+      data-model="query"
+    >
+  </div>
+
+  {% for program in this.programs %}
+    <article class="border rounded p-3 mb-3">
+      <h2 class="h5 mb-1">
+        {{ program.title }}
+        <small class="text-muted">(#{{ program.id }})</small>
+      </h2>
+
+      <div class="text-muted mb-2">
+        Catégorie : {{ program.category.name }}
+      </div>
+
+      <p class="mb-2">{{ program.synopsis }}</p>
+
+      <a href="{{ path('program_show', { slug: program.slug }) }}">
+        Voir la fiche
+      </a>
+    </article>
+  {% else %}
+    {% if query is not empty %}
+      <p class="text-muted">Aucun résultat.</p>
+    {% endif %}
+  {% endfor %}
+</div>
