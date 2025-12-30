@@ -1,0 +1,22 @@
+<div{{ attributes }}>
+  {% if app.user %}
+    <button
+      type="button"
+      class="btn btn-link p-0 text-danger"
+      data-action="live#action"
+      data-live-action-param="toggle"
+      aria-label="Watchlist"
+      title="Watchlist"
+    >
+      {% if app.user.watchlist.contains(this.program) %}
+        <i class="bi bi-heart-fill fs-3"></i>
+      {% else %}
+        <i class="bi bi-heart fs-3"></i>
+      {% endif %}
+    </button>
+  {% else %}
+    <a class="btn btn-outline-secondary" href="{{ path('app_login') }}">
+      Se connecter pour ajouter
+    </a>
+  {% endif %}
+</div>

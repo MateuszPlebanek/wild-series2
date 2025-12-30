@@ -9,6 +9,8 @@
     {% endif %}
     <h1>{{ program.title }}</h1>
 
+    {{ component('WatchList', { program: program }) }}
+
     {% if is_granted('ROLE_ADMIN') or (app.user and app.user == program.owner) %}
         <p>
             <a class="btn btn-warning" href="{{ path('program_edit', { slug: program.slug }) }}">
