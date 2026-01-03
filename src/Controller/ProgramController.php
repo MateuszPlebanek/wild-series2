@@ -20,6 +20,8 @@ use Symfony\Component\Mime\Email;
 use App\Entity\Comment;
 use App\Form\CommentType;
 use App\Form\SearchProgramType;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/programs', name: 'program_')]
 class ProgramController extends AbstractController
@@ -48,9 +50,6 @@ class ProgramController extends AbstractController
             'form'     => $form->createView(),
         ]);
     }
-
-
-
 
 
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
@@ -86,6 +85,26 @@ class ProgramController extends AbstractController
 
         return $this->render('program/new.html.twig', [
             'form' => $form,
+        ]);
+    }
+    #[Route('/{id<\d+>}/watchlist', name: 'watchlist', methods: ['GET', 'POST'])]
+    public function watchlist(Program $program, EntityManagerInterface $em): JsonResponse
+    {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        if ($user->getWatchlist()->contains($program)) {
+            $user->removeWatchlist($program);
+        } else {
+            $user->addWatchlist($program);
+        }
+
+        $em->flush();
+
+        return $this->json([
+            'isInWatchlist' => $user->getWatchlist()->contains($program),
         ]);
     }
 

@@ -50,6 +50,19 @@ This project was built as part of the Symfony learning
 
 - A dedicated search form (SearchProgramType)
 
+## 🧩 Twig Components
+- Navbar as a Twig Component (categories dropdown)
+- `LastEpisode` Twig Component displayed on all pages (shows the last 3 created episodes)
+
+## ⚡ Symfony UX Live Components
+- `ProgramSearch` Live Component: live search without page reload
+
+## ❤️ Watchlist (AJAX)
+- ManyToMany relation between `User` and `Program` (`watchlist` join table)
+- Toggle watchlist from the program page (heart icon)
+- Uses `fetch()` to update the icon without reloading the page
+- State is persisted in database (still correct after refresh)
+
 ## 🗃️ Fixtures & Database
 
 Automatic loading of:
@@ -89,37 +102,79 @@ Each program created through fixtures is automatically linked to an owner.
 ## 📁 Project Structure (Simplified)
 ```txt
 wild-series/
+ ├─ assets/
+ │   ├─ controllers/
+ │   │   ├─ hello_controller.js
+ │   │   └─ theme_controller.js
+ │   │
+ │   ├─ images/
+ │   │
+ │   ├─ styles/
+ │   │   └─ app.scss
+ │   │
+ │   ├─ vendor/
+ │   │
+ │   ├─ app.js
+ │   ├─ bootstrap.js
+ │   └─ controllers.json
+ │
+ │
+ ├─ bin/
+ │
+ ├─ config/
+ │   ├─ packages/
+ │   ├─ routes/
+ │   └─ services.yaml
+ │
+ ├─ migrations/
+ │
  ├─ public/
  │   └─ index.php
  │
  ├─ src/
  │   ├─ Controller/
+ │   │    ├─ ActorController.php
+ │   │    ├─ CategoryController.php
+ │   │    ├─ DefaultController.php
+ │   │    ├─ EpisodeController.php
  │   │    ├─ ProgramController.php
- │   │    ├─ SecurityController.php
  │   │    ├─ RegistrationController.php
- │   │    └─ ...
+ │   │    ├─ ResetPasswordController.php
+ │   │    ├─ SeasonController.php
+ │   │    └─ SecurityController.php
+ │   │    
  │   │
  │   ├─ DataFixtures/
- │   │    ├─ CategoryFixtures.php
- │   │    ├─ UserFixtures.php
- │   │    ├─ ProgramFixtures.php
  │   │    ├─ ActorFixtures.php
+ │   │    ├─ AppFixtures.php
+ │   │    ├─ CategoryFixtures.php
+ │   │    ├─ EpisodeFixtures.php
+ │   │    ├─ ProgramFixtures.php
  │   │    ├─ SeasonFixtures.php
- │   │    └─ EpisodeFixtures.php
+ │   │    └─ UserFixtures.php         
+ │   │    
  │   │
  │   ├─ Entity/
- │   │    ├─ Program.php
  │   │    ├─ Actor.php
- │   │    ├─ User.php
- │   │    ├─ Season.php
+ │   │    ├─ Category.php
+ │   │    ├─ Comment.php
  │   │    ├─ Episode.php
- │   │    └─ Category.php
+ │   │    ├─ Program.php
+ │   │    ├─ ResetPasswordRequest.php
+ │   │    ├─ Season.php
+ │   │    └─ User.php
  │   │
  │   ├─ Form/
- │   │    ├─ ProgramType.php
+ │   │    ├─ ActorType.php
+ │   │    ├─ CategoryType.php
+ │   │    ├─ ChangePasswordFormType.php
  │   │    ├─ CommentType.php
+ │   │    ├─ EpisodeType.php
+ │   │    ├─ ProgramType.php
+ │   │    ├─ RegistrationFormType.php
+ │   │    ├─ ResetPasswordRequestFormType.php
  │   │    ├─ SearchProgramType.php
- │   │    └─ RegistrationFormType.php
+ │   │    └─ SeasonType.php
  │   │
  │   ├─ Repository/
  │   │    ├─ ProgramRepository.php
@@ -134,39 +189,79 @@ wild-series/
  │   ├─ Service/
  │   │    └─ ProgramDuration.php
  │   │
+ │   ├─ Twig/Components
+ │   │    ├─ LastEpisode.php
+ │   │    ├─ Navbar.php
+ │   │    ├─ ProgramSearch.php
+ │   │    └─ WatchList.php
+ │   │
  │   └─ Kernel.php
  │
  ├─ templates/
- │   ├─ program/
- │   │    ├─ index.html.twig
- │   │    ├─ show.html.twig
+ │   ├─ actor/
  │   │    ├─ edit.html.twig
- │   │    └─ new.html.twig
+ │   │    ├─ index.html.twig
+ │   │    ├─ new.html.twig
+ │   │    └─ show.html.twig
+ │   │
+ │   ├─ category/
+ │   │    ├─ index.html.twig
+ │   │    ├─ new.html.twig
+ │   │    └─ show.html.twig
+ │   │
+ │   ├─ components/
+ │   │    ├─ LastEpisode.html.twig
+ │   │    ├─ Navbar.html.twig
+ │   │    ├─ ProgramSearch.html.twig
+ │   │    └─ WatchList.html.twig
+ │   │
+ │   ├─ emails/
+ │   │    ├─ layout.html.twig
+ │   │    └─ new_episode.html.twig
  │   │
  │   ├─ episode/
+ │   │    ├─ _delete_form.html.twig
+ │   │    ├─ _form.html.twig 
+ │   │    ├─ edit.html.twig
+ │   │    ├─ index.html.twig
+ │   │    ├─ new.html.twig
+ │   │    └─ show.html.twig
+ │   │
+ │   ├─ program/
+ │   │    ├─ edit.html.twig
+ │   │    ├─ episode_show.html.twig
+ │   │    ├─ index.html.twig
+ │   │    ├─ new.html.twig
+ │   │    ├─ newProgramEmail.html.twig
+ │   │    ├─ season_show.html.twig
  │   │    └─ show.html.twig
  │   │
  │   ├─ registration/
- │   │    └─ register.html.twig
+ │   │    └─ confirmation_email.html.twig
  │   │
  │   ├─ reset_password/
  │   │    ├─ check_email.html.twig
  │   │    ├─ email.html.twig
+ │   │    ├─ request.html.twig
  │   │    └─ reset.html.twig
  │   │
+ │   ├─ season/
+ │   │    ├─_delete_form.html.twig
+ │   │    ├─_form.html.twig
+ │   │    ├─ edit.html.twig
+ │   │    ├─ index.html.twig
+ │   │    ├─ new.html.twig
+ │   │    └─ show.html.twig
+ │   │
  │   ├─ security/
- │   │    └─ login.html.twig
+ │   │    ├─ login.html.twig
+ │   │    ├─ profile.html.twig
+ │   │    └─ register.html.twig
  │   │
- │   ├─ partials/
- │   │    └─ _navbar.html.twig
- │   │
+ │   ├─ _navbar.html.twig
  │   ├─ base.html.twig
  │   └─ index.html.twig
  │
- ├─ config/
- │   ├─ packages/
- │   ├─ routes/
- │   └─ services.yaml
  │
  ├─ var/
  ├─ vendor/
@@ -174,9 +269,14 @@ wild-series/
  ├─ symfony.lock
  ├─ .env
  └─ README.md
+
 ```
 
- 
+## ✅ Requirements
+- PHP 8.3+ / 8.4
+- Composer
+- MySQL
+- Symfony CLI (recommended)
 
 ## 🧪 Running the Project
 ## 1️⃣ Install dependencies
@@ -200,3 +300,7 @@ symfony console doctrine:fixtures:load
 
 ## 5️⃣ Start the server
 symfony server:start -d
+
+## 🧠 Notes
+- This project uses AssetMapper/importmap for frontend assets.
+- Watchlist uses `fetch()` in `assets/app.js` to update the UI without reloading.

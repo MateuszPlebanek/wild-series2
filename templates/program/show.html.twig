@@ -7,24 +7,43 @@
     {% if program.poster %}
       <img src="{{ vich_uploader_asset(program, 'posterFile') }}" alt="{{ program.title }}" style="max-width:240px">
     {% endif %}
-    <h1>{{ program.title }}</h1>
 
-    {{ component('WatchList', { program: program }) }}
+    <h1 class="d-flex align-items-center gap-3">
+      {{ program.title }}
+
+      {# WATCHLIST (AJAX) #}
+      {% if app.user %}
+        <a
+          id="watchlist"
+          data-no-swup
+          href="{{ path('program_watchlist', { id: program.id }) }}"
+          class="text-decoration-none"
+          aria-label="Watchlist"
+          title="Watchlist"
+        >
+          <i class="bi {{ app.user.watchlist.contains(program) ? 'bi-heart-fill' : 'bi-heart' }}"></i>
+        </a>
+      {% else %}
+        <a class="btn btn-outline-secondary" href="{{ path('app_login') }}">
+          Se connecter pour ajouter
+        </a>
+      {% endif %}
+    </h1>
 
     {% if is_granted('ROLE_ADMIN') or (app.user and app.user == program.owner) %}
-        <p>
-            <a class="btn btn-warning" href="{{ path('program_edit', { slug: program.slug }) }}">
-                ✏️ Éditer cette série
-            </a>
-        </p>
+      <p>
+        <a class="btn btn-warning" href="{{ path('program_edit', { slug: program.slug }) }}">
+          ✏️ Éditer cette série
+        </a>
+      </p>
     {% endif %}
-    
+
     <p>{{ program.synopsis }}</p>
 
     {% if programDuration is defined %}
-    <p><strong>Durée totale :</strong> {{ programDuration }}</p>
+      <p><strong>Durée totale :</strong> {{ programDuration }}</p>
     {% endif %}
-    
+
     <p>Catégorie : {{ program.category.name }}</p>
   </article>
 
@@ -34,9 +53,9 @@
       <li>
         Saison {{ season.number }} ({{ season.year }})
         — <a href="{{ path('program_season_show', {
-              programSlug: program.slug,
-              seasonId:  season.id
-            }) }}">Voir la saison</a>
+          programSlug: program.slug,
+          seasonId: season.id
+        }) }}">Voir la saison</a>
       </li>
     {% else %}
       <li>Aucune saison.</li>
